@@ -1,9 +1,9 @@
 <?php namespace Service;
 
+use Interfaces\Service\Task AS ITaskService;
+use Repository\Task AS TaskRepository;
+use Lib\Core\Response;
 use stdClass;
-use \Interfaces\Service\Task AS ITaskService;
-use \Repository\Task AS TaskRepository;
-use \Lib\Core\Response;
 
 class Task implements ITaskService
 {
@@ -12,10 +12,10 @@ class Task implements ITaskService
 
     private function __construct()
     {
-        $this->repository = new TaskRepository();
+        $this->repository = new TaskRepository;
     }
-    public static function  getInstance()
-    {
+
+    public static function getInstance(){
         if(!isset(self::$instance))
         {
             $class = __CLASS__ ;
@@ -24,59 +24,54 @@ class Task implements ITaskService
         return self::$instance;
     }
 
-    function AddTask(stdClass $class)
+    public function Add(stdClass $obj)
     {
-        if(empty($class->title))
+        if(empty($obj->title))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese Titulo");
+            return false;
         }
-        if(empty($class->description))
+        if(empty($obj->description))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese Descripcion");
+            return false;
         }
-        $result = $this->repository->Create($class);
-
-        Response::Ok(200,"Ok",$result);
+        $this->repository->Create($obj);
+        Response::Ok(201,"Se Agrego Tarea!",null);
     }
-
-    public function LisTask()
+    public function List()
     {
-        Response::Ok(200,"Ok",$this->repository->Read());
+        $result = $this->repository->Read();
+        Response::Ok(200,"List Task",$result);
     }
-
-    function EditTask(stdClass $class)
+    public function Edit(stdClass $obj)
     {
-        if(empty($class->id))
+        if(empty($obj->id))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese ID");
+            return false;
         }
-        if(empty($class->title))
+        if(empty($obj->title))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese Titulo");
+            return false;
         }
-        if(empty($class->description))
+        if(empty($obj->description))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese Descripcion");
+            return false;
         }
-        $result = $this->repository->Update($class);
-
-        Response::Ok(200,"Ok",$result);
+        $this->repository->Update($obj);
+        Response::Ok(200,"Se Edito Tarea!",null);
     }
-
-    function DeleteTask($id)
+    public function Remove($id)
     {
         if(empty($id))
         {
-            Response::Bad(400,"Bad Request!");
-            return;
+            Response::Bad(400,"Ingrese ID");
+            return false;
         }
-        $result = $this->repository->Delete($id);
-
-        Response::Ok(200,"Ok",$result);
+        $this->repository->delete($id);
+        Response::Ok(200,"Se Elimino Tarea",null);
     }
 }

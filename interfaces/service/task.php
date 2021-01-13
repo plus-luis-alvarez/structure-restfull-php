@@ -4,8 +4,8 @@ use stdClass;
 
 interface Task
 {
-    function AddTask(stdClass $class);
-    function LisTask();
-    function EditTask(stdClass $class);
-    function DeleteTask($id);
+    function Add(stdClass $obj);
+    function List();
+    function Edit(stdClass $obj);
+    function Remove($id);
 }

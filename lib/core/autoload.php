@@ -5,6 +5,6 @@ spl_autoload_register(function($class){
     $url = strtolower($url);
     if(is_readable($url))
     {
-        include_once ("${url}");
+        include_once("${url}");
     }
 });

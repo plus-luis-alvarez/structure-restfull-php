@@ -1,48 +1,45 @@
 <?php
-include_once ("config/Globals.php");
-include_once ("lib/core/autoload.php");
-header("Content-Type:application/json");
+require_once("config/Globals.php");
+require_once("lib/core/autoload.php");
+    
+use Lib\Core\Helpers;
+use Lib\Core\Response;
 
-use Helpers\Helpers AS helper;
-use Controller\Error AS error;
 
 $uri = $_SERVER["REQUEST_URI"];
-$Array_item = helper::getItems($uri);
 
-if(empty($Array_item))
+$items = Helpers::getItems($uri);
+
+
+if(empty($items))
 {
-    error::NotFound();
+    Response::Bad(404,"Not Found");
 }
 else
 {
-    $controller = $Array_item[0];
-
-    $method = isset($Array_item[1]) ? $Array_item[1] : "Index";
-
-    $param = isset($Array_item[2]) ? $Array_item[2] : null;
-
-    if (is_numeric($method)){
-        $param = $method;
-        $method = "Index";
-    }
-    $Array_constroller = helper::getController($controller);
-    $path = $Array_constroller[0];
-    $class = $Array_constroller[1];
-
+    $controller = $items[0];
+    $method = isset($items[1]) ? $items[1] : "Index";
+    $path = "controller/".strtolower($controller).".php";
     if(is_readable($path))
     {
-        if(method_exists($class,$method))
+        $controller = "\\Controller\\".$controller;
+        if(method_exists($controller,$method))
         {
-            $obj = new $class;
-            $obj->$method($param);
+            $obj = new $controller();
+            $obj->$method();  
         }
         else
         {
-            error::NotFound();
+            Response::Bad(404,"Not Method");
         }
     }
     else
     {
-        error::NotFound();
+        Response::Bad(404,"Not Found"); 
     }
 }
+
+
+
+
+

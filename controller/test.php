@@ -1,8 +1,4 @@
-<?php
-
-
-namespace Controller;
-
+<?php namespace Controller;
 
 use Lib\Core\Response;
 
@@ -10,11 +6,11 @@ class Test
 {
     public function __construct()
     {
-
+        
     }
 
-    public function Index()
+    public function Hello()
     {
-        Response::Ok(200,"Ok","Test Controller");
+        Response::Ok(200,"Hello Word",null);
     }
 }

@@ -1,66 +1,56 @@
 <?php namespace Repository;
 
-use \Interfaces\Repository\Task AS ITaskRepository;
+use Interfaces\Repository\Task AS ITaskRepository;
+use Lib\Core\Connection;
 use stdClass;
 use PDO;
-use \Lib\Core\Connection;
+
 
 class Task implements ITaskRepository
 {
-    private $connection;
+    private $cn;
 
     public function __construct()
     {
-        $this->connection = Connection::getConnection();
+        $this->cn = Connection::getConnection();
     }
-    function Create(stdClass $class)
+    public function Create(stdClass $obj)
     {
         $sql = "CALL USP_TASK_INSERT(:title,:description)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(":title",$class->title,PDO::PARAM_STR);
-        $stmt->bindParam(":description",$class->description,PDO::PARAM_STR);
+        $stmt = $this->cn->prepare($sql);
+        $stmt->bindParam(":title",$obj->title,PDO::PARAM_STR);
+        $stmt->bindParam(":description",$obj->description,PDO::PARAM_STR); 
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_OBJ)[0];
         $stmt = null;
-        $this->connection = null;
-
-        return $result;
+        $this->cn = null; 
     }
-
-    function Read()
+    public function Read()
     {
         $sql = "CALL USP_TASK_GETALL";
-        $stmt =  $this->connection->query($sql);
-        $resutl = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $stmt = $this->cn->query($sql);
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
         $stmt = null;
-        $this->connection = null;
-        return $resutl;
+        $this->cn = null;
+        return $result;
     }
-
-    function Update(stdClass $class)
+    public function Update(stdClass $obj)
     {
         $sql = "CALL USP_TASK_UPDATE(:id,:title,:description)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(":id",$class->id,PDO::PARAM_INT);
-        $stmt->bindParam(":title",$class->title,PDO::PARAM_STR);
-        $stmt->bindParam(":description",$class->description,PDO::PARAM_STR);
+        $stmt = $this->cn->prepare($sql);
+        $stmt->bindParam(":id",$obj->id,PDO::PARAM_INT);
+        $stmt->bindParam(":title",$obj->title,PDO::PARAM_STR);
+        $stmt->bindParam(":description",$obj->description,PDO::PARAM_STR); 
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_OBJ)[0];
         $stmt = null;
-        $this->connection = null;
-
-        return $result;
+        $this->cn = null; 
     }
-
-    function Delete($id)
+    public function Delete($id)
     {
         $sql = "CALL USP_TASK_DELETE(:id)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(":id",$id,PDO::PARAM_INT);
+        $stmt = $this->cn->prepare($sql);
+        $stmt->bindParam(":id",$id,PDO::PARAM_STR); 
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_OBJ)[0];
         $stmt = null;
-        $this->connection = null;
-        return $result;
+        $this->cn = null; 
     }
 }

@@ -6,27 +6,29 @@ class Response
 {
     private static $obj;
 
-    private static function init()
+    private static function Init()
     {
         self::$obj = new stdClass;
     }
-    private static function view(int $code)
+    private static function view($code)
     {
+        header("Content-Type:application/json");
         http_response_code($code);
         echo json_encode(self::$obj);
     }
 
-    public static function Ok(int $code,string $message,$data)
+    public static function Ok($code,$message,$data)
     {
-        self::init();
+        self::Init();
         self::$obj->code = $code;
         self::$obj->message = $message;
         self::$obj->data = $data;
         self::view($code);
     }
-    public static function Bad(int $code,string $error)
+    public static function Bad($code,$error)
     {
-        self::init();
+        self::Init();
+        self::$obj->code = $code;
         self::$obj->error = $error;
         self::view($code);
     }

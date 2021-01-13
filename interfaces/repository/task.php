@@ -4,8 +4,8 @@ use stdClass;
 
 interface Task
 {
-    function Create(stdClass $class);
+    function Create(stdClass $obj);
     function Read();
-    function Update(stdClass $class);
+    function Update(stdClass $obj);
     function Delete($id);
 }
